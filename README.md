@@ -52,9 +52,9 @@ The most popular Display Manager is lightdm, and lightdm is installed by default
 Edit `/etc/lightdm/lightdm.conf` and modify the XDMCPServer section as follows
 
 ```
-    [XDMCPServer]
-    enabled=true
-    port=177
+[XDMCPServer]
+enabled=true
+port=177
 ```
 
 `sudo systemctl try-restart lightdm.service` to restart the service with the new settings.
@@ -113,29 +113,29 @@ If a VNC window pops up but there's no graphical display or login box, you're pr
 The .socket file describes the socket to systemd. VNC socket numbers start at 5900. It is suggested that you maintain these in sequential order, so that a) the stream number can be inferred from the filename (e.g., xvnc0=5900, xvnc1=5901, etc), and your future sanity is not jeapordized.
 
 ```
-    [Unit]
-    Description=XVNC Server
-    
-    [Socket]
-    ListenStream=5900
-    Accept=yes
-    
-    [Install]
-    WantedBy=sockets.target
+[Unit]
+Description=XVNC Server
+
+[Socket]
+ListenStream=5900
+Accept=yes
+
+[Install]
+WantedBy=sockets.target
 ```
 
 ### xvnc0@.service
 
 ```
-    [Unit]
-    Description=XVNC Per-Connection Daemon
-    
-    [Service]
-    ExecStart=-/usr/bin/Xtigervnc -noreset -inetd -query localhost -geometry 1880x1100 -pn -once -SecurityTypes None
-    User=nobody
-    StandardInput=socket
-    StandardOutput=socket
-    StandardError=syslog
+[Unit]
+Description=XVNC Per-Connection Daemon
+
+[Service]
+ExecStart=-/usr/bin/Xtigervnc -noreset -inetd -query localhost -geometry 1880x1100 -pn -once -SecurityTypes None
+User=nobody
+StandardInput=socket
+StandardOutput=socket
+StandardError=syslog
 ```
 ## Appendix 1 - xdm and selecting a Window Manager
 
@@ -144,25 +144,25 @@ xdm does not provide a built-in way (that I'm aware of) to select the Window Man
 You'll need a ~/.xsession file to enable choosewm. Here's a sample:
 
 ```
-    # set wm to default window manager
-    # set xchoose to "/usr/bin/choosewm" or "" to not run choosewm and use default
-    wm="/usr/bin/icewm"
-    xchoose=""
-    # Comment out next line to not run choosewm
-    xchoose="/usr/bin/choosewm"
-    xrdb < ~/.Xdefaults
-    xhost +
-    #
-    # Personal customizations
-    #
-    xsetroot -solid black
-    #
-    # run choosewm (which will run the selected wm) or the default wm
-    #
-    [ -f "$xchoose" ] && exec $xchoose
-    [ -f "$wm" ] && exec $wm
-    #
-    # If we get here, something is wrong, so run an xterm
-    #
-    exec /usr/bin/xterm
+# set wm to default window manager
+# set xchoose to "/usr/bin/choosewm" or "" to not run choosewm and use default
+wm="/usr/bin/icewm"
+xchoose=""
+# Comment out next line to not run choosewm
+xchoose="/usr/bin/choosewm"
+xrdb < ~/.Xdefaults
+xhost +
+#
+# Personal customizations
+#
+xsetroot -solid black
+#
+# run choosewm (which will run the selected wm) or the default wm
+#
+[ -f "$xchoose" ] && exec $xchoose
+[ -f "$wm" ] && exec $wm
+#
+# If we get here, something is wrong, so run an xterm
+#
+exec /usr/bin/xterm
 ```

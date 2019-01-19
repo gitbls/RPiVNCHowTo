@@ -1,0 +1,9 @@
+[Unit]
+Description=XVNC Per-Connection Daemon
+
+[Service]
+ExecStart=-/usr/bin/Xtigervnc -noreset -inetd -query localhost -geometry 1880x1100 -pn -once -SecurityTypes None
+User=nobody
+StandardInput=socket
+StandardOutput=socket
+StandardError=syslog

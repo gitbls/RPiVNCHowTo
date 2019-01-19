@@ -12,13 +12,13 @@ These instructions have been tested on 2018-11-13-raspbian-stretch, and details 
 
 **NOTE: **This method can be used on other contemporary Linux distros, although adjustments will be required.
 
-There are (at least) 3 different VNC servers provided with Raspbian. RealVNC provides a cloud-based solution, and is quite elegant. However, it requires that you have an account with the RealVNC service in the cloud. This may be a bit over-the-top for a LAN-based configuration.
+There are (at least) 3 different VNC servers provided with Raspbian. **RealVNC** provides a cloud-based solution, and is quite elegant. However, it requires that you have an account with the RealVNC service in the cloud. This may be a bit over-the-top for a LAN-based configuration.
 
-TightVNC is a very nice VNC server, as well, but I found that certain fonts were corrupted (9x15bold, specifically, which I have used for far too long in my xterm windows).
+**TightVNC** is a very nice VNC server, as well, but I found that at least one font was not always displayed correctly (9x15bold, specifically, which I have used for far too long in my xterm windows).
 
-The third VNC server is TigerVNC, which is extremely flexible. The rest of this document is based on TigerVNC. (As an aside, TightVNC can be used with this method as well, however, the systemd service commands in the .service files are specific to TigerVNC and will need adjustment for tightvnc by changing `Xtigervnc` to `Xtightvnc`, in addition to installing the tightvncserver package.)
+The third VNC server is **TigerVNC**, which is extremely flexible. The rest of this document is based on TigerVNC. (As an aside, TightVNC can be used with this method as well, however, the systemd service commands in the .service files are specific to TigerVNC and will need adjustment for tightvnc by changing `Xtigervnc` to `Xtightvnc`, in addition to installing the tightvncserver package.)
 
-TigerVNC provides a tool that greatly simplifies running a VNC server (`/usr/bin/vncserver`). However, it isn't optimal in that it keeps the VNC server running whether you're using it or not, and you need to either manually start it or sort out how to automaticallly start it when the system reboots. It is, however, a much simpler way to get started. The method described here starts the VNC server on-demand, and is fully integrated into Linux systemd.
+TigerVNC provides a tool that greatly simplifies running a VNC server (`/usr/bin/vncserver`). However, it isn't optimal in that it keeps the VNC server running whether you're using it or not, and you need to either manually start it or sort out how to automaticallly start it when the system reboots. It is, however, a much simpler way to get started. The method      described here starts the VNC server on-demand, and is fully integrated into Linux systemd.
 
 *Should you use /usr/bin/vncserver or this method?* If you have never typed into a terminal on Linux, `vncserver` was made for you. On the other hand, if you're moderately comfortable working with the Linux bash command line and making simple file edits, the method documented here is a much better approach. 
 
@@ -28,7 +28,7 @@ Full Raspbian comes with the realvnc-vnc-server package installed. You can remov
 
 * `sudo apt-get install tigervnc-standalone-server tigervnc-common package xfonts-scalable xfonts-100dpi xfonts-75dpi`
 
-Now continue with the System Configuration below.
+Continue with the System Configuration below.
 
 ## Installing onto Raspbian Lite
 
@@ -36,7 +36,7 @@ Lite Raspbian is exactly that...Lite. You'll need to install a few more packages
 
 * `apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
 * `apt-get install tigervnc-standalone-server tigervnc-common package xfonts-100dpi xfonts-75dpi xfonts-scalable`
-* You'll need a *Display Manager*. I prefer xdm, but lightdm is another good choice. `apt-get install xdm` or 'apt-get install lightdm` as appropriate.
+* You'll need a *Display Manager*. I prefer xdm, but lightdm is another good choice. `apt-get install xdm` or `apt-get install lightdm` as appropriate.
 * You'll also need a *Window Manager*. I prefer icewm, but you might prefer something different. In any case, you'll need to `apt-get install` your Window Manager.
 
 ## System Configuration
@@ -45,7 +45,7 @@ This section details the system configuration changes to enable VNC.
 
 ### Display Manager Configuration
 
-The most popular Display Manager is lightdm. I prefer xdm, so I've documented that as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
+The most popular Display Manager is lightdm. I've documented xdm as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
 
 #### Lightdm Configuration
 
@@ -59,9 +59,9 @@ Edit `/etc/lightdm/lightdm.conf` and modify the XDMCPServer section as follows
 
 #### xdm Configuration
 
-* Edit /etc/X11/xdm-config and comment out the line *DisplayManager.requestPort* with a "!"
-* Edit /etc/X11/Xaccess and uncomment the line that has *#any host can get a login window*
-* `sudo systemctl try-restart xdm.service`
+* Edit `/etc/X11/xdm-config` and comment out the line *DisplayManager.requestPort* with a "!"
+* Edit `/etc/X11/Xaccess` and uncomment the line that has *#any host can get a login window*
+* `sudo systemctl try-restart xdm.service` to restart the service with the new settings
 
 ### VNC Service configuration
 
@@ -77,6 +77,7 @@ Edit `/etc/lightdm/lightdm.conf` and modify the XDMCPServer section as follows
         * Change the resolution in xvnc0@.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which is in xvnc1@.service.
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred@.service if you'd prefer, although this is not recommended.)
         * The @ in the filename is important. When a VNC connection is made, a new service is started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that. You can view the status of the services with `sudo systemctl status xvnc*`
+        *  **Note** that you may need to prefix the "@" with a backslash ("\") on the command line.
 * `sudo systemctl daemon-reload` - Must be done any time the systemd configuration files are modified.
 * Start the VNC service connections. For each one you've created (e.g., xvnc0 and xvnc1 in this example), start the socket and enable it across reboots
     * `sudo systemctl start xvnc0.socket` - Starts the socket in the running system

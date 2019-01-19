@@ -26,7 +26,7 @@ TigerVNC provides a tool that greatly simplifies running a VNC server (`/usr/bin
 
 Full Raspbian comes with the realvnc-vnc-server package installed. You can remove it or not. Then execute the following commands:
 
-* `sudo apt-get install tigervnc-standalone-server tigervnc-common package xfonts-scalable xfonts-100dpi xfonts-75dpi`
+* `sudo apt-get install tigervnc-standalone-server tigervnc-common xfonts-scalable xfonts-100dpi xfonts-75dpi`
 
 Continue with the System Configuration below.
 
@@ -34,10 +34,10 @@ Continue with the System Configuration below.
 
 Lite Raspbian is exactly that...Lite. You'll need to install a few more packages. 
 
-* `apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
-* `apt-get install tigervnc-standalone-server tigervnc-common package xfonts-100dpi xfonts-75dpi xfonts-scalable`
-* You'll need a *Display Manager*. I prefer xdm, but lightdm is another good choice. `apt-get install xdm` or `apt-get install lightdm` as appropriate.
-* You'll also need a *Window Manager*. I prefer icewm, but you might prefer something different. In any case, you'll need to `apt-get install` your Window Manager of choice.
+* `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
+* `sudo apt-get install tigervnc-standalone-server tigervnc-common package xfonts-100dpi xfonts-75dpi xfonts-scalable`
+* You'll need a *Display Manager*. I prefer xdm, but lightdm is another good choice. `sudo apt-get install xdm` or `sudo apt-get install lightdm` as appropriate.
+* You'll also need a *Window Manager*. I prefer icewm, but you might prefer something different. In any case, you'll need to `sudo apt-get install` your Window Manager of choice.
 
 ## System Configuration
 
@@ -45,7 +45,7 @@ This section details the system configuration changes to enable VNC.
 
 ### Display Manager Configuration
 
-The most popular Display Manager is lightdm. I've documented xdm as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
+The most popular Display Manager is lightdm, and lightdm is installed by default on Raspbian Full. I've documented xdm as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
 
 #### Lightdm Configuration
 
@@ -57,11 +57,17 @@ Edit `/etc/lightdm/lightdm.conf` and modify the XDMCPServer section as follows
     port=177
 ```
 
+`sudo systemctl try-restart lightdm.service` to restart the service with the new settings.
+
 #### xdm Configuration
 
-* Edit `/etc/X11/xdm-config` and comment out the line *DisplayManager.requestPort* with a "!"
-* Edit `/etc/X11/Xaccess` and uncomment the line that has *#any host can get a login window*
+xdm is a lightweight Display Manager with less capabilities than lightdm. That said, I've found it to consume less system resources than lightdm, and coupled with choosewm (see Appendix below), to meet my needs.
+
+* Edit `/etc/X11/xdm/xdm-config` and comment out the line *DisplayManager.requestPort* with a "!"
+* Edit `/etc/X11/xdm/Xaccess` and uncomment the line that has *#any host can get a login window*
 * `sudo systemctl try-restart xdm.service` to restart the service with the new settings
+
+**Note**If your system has lightdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers once they are both installed, use `dpkg-reconfigure lightdm`.
 
 ### VNC Service configuration
 
@@ -74,7 +80,7 @@ Edit `/etc/lightdm/lightdm.conf` and modify the XDMCPServer section as follows
             * Bash> sudo wget https://raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
     * Edit the VNC configuration files
         * Use sudo with your favorite editor to edit the .service files, which are in /lib/systemd/system
-        * Change the resolution in xvnc0@.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which is in xvnc1@.service.
+        * Change the resolution in xvnc0@.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which I've put in xvnc1@.service.
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred@.service if you'd prefer, although this is not recommended.)
         * The @ in the filename is important. When a VNC connection is made, a new service is started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
         *  **Note** that you may need to prefix the "@" with a backslash ("\") on the command line.
@@ -96,10 +102,9 @@ In the event that it doesn't, see the next section.
 
 If things aren't working correctly, the best approach is to look at the system log (with `sudo journalctl`) and also the status of the services with `sudo systemctl status xvnc*`
 
-If a VNC window pops up but there's no graphical display or login box, you're probably using xdm and have run into a problem that I encountered. I'm not sure yet what the root cause is, but here are two fixes. Either one is fine, but changing the service configuration file has the least likelihood of breaking something else.
+If a VNC window pops up but there's no graphical display or login box, you're probably using xdm and have run into a problem that I encountered. I'm not sure yet what the root cause is, but it's easy to fix:
 
-* Change -query localhost to -query 127.0.0.1 in the xvnc@ files, then do sudo systemctl daemon-reload
-* Edit /etc/hosts and on the line starting with ::1 change *localhost *to *localhost6*
+* Change `-query localhost` to `-query 127.0.0.1` in the xvnc@.service files, then do `sudo systemctl daemon-reload` and try again.
 
 ## systemd configuration file listings
 
@@ -132,4 +137,32 @@ The .socket file describes the socket to systemd. VNC socket numbers start at 59
     StandardOutput=socket
     StandardError=syslog
 ```
+## Appendix 1 - xdm and selecting a Window Manager
 
+xdm does not provide a built-in way (that I'm aware of) to select the Window Manager on login. The package choosewm fills the gap. Simply `apt-get install choosewm` to install it. Choosewm uses the system's list of Window Managers to offer you a choice when you login.
+
+You'll need a ~/.xsession file to enable choosewm. Here's a sample:
+
+```
+    # set wm to default window manager
+    # set xchoose to "/usr/bin/choosewm" or "" to not run choosewm and use default
+    wm="/usr/bin/icewm"
+    xchoose=""
+    # Comment out next line to not run choosewm
+    xchoose="/usr/bin/choosewm"
+    xrdb < ~/.Xdefaults
+    xhost +
+    #
+    # Personal customizations
+    #
+    xsetroot -solid black
+    #
+    # run choosewm (which will run the selected wm) or the default wm
+    #
+    [ -f "$xchoose" ] && exec $xchoose
+    [ -f "$wm" ] && exec $wm
+    #
+    # If we get here, something is wrong, so run an xterm
+    #
+    exec /usr/bin/xterm
+```

@@ -71,7 +71,7 @@ Edit `/etc/lightdm/lightdm.conf` and modify the XDMCPServer section as follows
         * To download:
             * Bash> cd /lib/systemd/system
             * Bash> sudo wget https://raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0.socket
-            * Bash> sudo wget https://raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0\@.service
+            * Bash> sudo wget https://raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
     * Edit the VNC configuration files
         * Use sudo with your favorite editor to edit the .service files, which are in /lib/systemd/system
         * Change the resolution in xvnc0@.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which is in xvnc1@.service.

@@ -80,7 +80,7 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
     * Edit the VNC configuration files
         * Use sudo with your favorite editor to edit the .service files, which are in /lib/systemd/system
-        * Change the resolution in xvnc0@.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which I've put in xvnc1@.service.
+        * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which I've put in xvnc1@.service.
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred@.service if you'd prefer, although this is not recommended.)
         * The @ in the filename is important. When a VNC connection is made, a new service is started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
         *  **Note** that you may need to prefix the "@" with a backslash ("\") on the command line.

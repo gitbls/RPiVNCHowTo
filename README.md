@@ -80,8 +80,8 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
     * Edit the VNC configuration files
         * Use sudo with your favorite editor to edit the .service files, which are in /lib/systemd/system
-        * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which I've put in xvnc1@.service.
-        * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred@.service if you'd prefer, although this is not recommended.)
+        * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc0@.service. For my 1900x1080 laptop I use 1880x960, which I've put in xvnc<span>1@.</span>service.
+        * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred<span>@.</span>service if you'd prefer, although this is not recommended.)
         * The @ in the filename is important. When a VNC connection is made, a new service is started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
         *  **Note** that you may need to prefix the "@" with a backslash ("\") on the command line.
 * `sudo systemctl daemon-reload` - Must be done any time the systemd configuration files are modified.
@@ -104,7 +104,7 @@ If things aren't working correctly, the best approach is to look at the system l
 
 If a VNC window pops up but there's no graphical display or login box, you're probably using xdm and have run into a problem that I encountered. I'm not sure yet what the root cause is, but it's easy to fix:
 
-* Change `-query localhost` to `-query 127.0.0.1` in the xvnc@.service files, then do `sudo systemctl daemon-reload` and try again.
+* Change `-query localhost` to `-query 127.0.0.1` in the xvnc<span>@.</span>service files, then do `sudo systemctl daemon-reload` and try again.
 
 ## systemd configuration file listings
 
@@ -124,7 +124,7 @@ Accept=yes
 WantedBy=sockets.target
 ```
 
-### xvnc0@.service
+### xvnc<span>0@.</span>service
 
 ```
 [Unit]

@@ -65,6 +65,7 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
 
 * Edit `/etc/X11/xdm/xdm-config` and comment out the line *DisplayManager.requestPort* with a "!"
 * Edit `/etc/X11/xdm/Xaccess` and uncomment the line that has *#any host can get a login window*
+* If you don't want a graphical login on the Raspberry Pi HDMI port edit `/etc/X11/xdm/Xservers` and comment out the line `:0 local /usr/bin/X :0 vt7 -nolisten tcp`. 
 * `sudo systemctl try-restart xdm.service` to restart the service with the new settings
 
 **Note**If your system has lightdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers once they are both installed, use `dpkg-reconfigure lightdm`.

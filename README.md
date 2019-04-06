@@ -91,7 +91,7 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
     * `sudo systemctl enable xvnc0.socket` - Sets the socket to start after the system reboots
 * **Test** that you can use a VNC client to connect to your server. 
 
-If additional VNC resolutions are needed, copy the xvnc0* files to, for instance, xvnc1.socket and xvnc1<span>0@.</span>service. Then edit the .socket file to change the socket number (increase by 1 from the previous), and edit the .service file to change the resolution. After the files are appropriately updated, issue the above systemctl daemon-reload/start/enable commands for the new socket.
+If additional VNC resolutions are needed, copy the xvnc0* files to, for instance, xvnc1.socket and xvnc<span>1@.</span>service. Then edit the .socket file to change the socket number (increase by 1 from the previous), and edit the .service file to change the resolution. After the files are appropriately updated, issue the above systemctl daemon-reload/start/enable commands for the new socket.
 
 ## How does this work?
 

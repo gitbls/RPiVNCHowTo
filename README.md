@@ -103,10 +103,6 @@ In the event that it doesn't, see the next section.
 
 If things aren't working correctly, the best approach is to look at the system log (with `sudo journalctl`) and also the status of the services with `sudo systemctl status xvnc*`
 
-If a VNC window pops up but there's no graphical display or login box, you're probably using xdm and have run into a problem that I encountered. I'm not sure yet what the root cause is, but it's easy to fix:
-
-* Change `-query localhost` to `-query 127.0.0.1` in the xvnc<span>@.</span>service files, then do `sudo systemctl daemon-reload` and try again.
-
 ## systemd configuration file listings
 
 ### xvnc0.socket

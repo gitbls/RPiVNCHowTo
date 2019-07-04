@@ -79,7 +79,7 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
             * Bash> cd /lib/systemd/system
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0.socket
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
-    * sudo Edit the VNC configuration files
+    * Edit the VNC configuration files
         * sudo Edit the .service files, which are in /lib/systemd/system
         * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc<span>0@.</span>service. For my 1900x1080 laptop I use 1880x960, which I've put in the file xvnc<span>1@.</span>service (with a corresponding xvnc1.socket file.
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred<span>@.</span>service if you'd prefer)

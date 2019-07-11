@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo""
+echo "** Editing xdm config files..."
+
+sudo sed -i "s/DisplayManager.requestPort:	0/\!DisplayManager.requestPort:	0/" /etc/X11/xdm/xdm-config
+sudo sed -i "s/\#\*					#any host can get a login window/\*					#any host can get a login window/"  /etc/X11/xdm/Xaccess
+sudo sed -i "s/\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/\#\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/"  /etc/X11/xdm/Xservers
+
+sudo systemctl try-restart xdm.service
+

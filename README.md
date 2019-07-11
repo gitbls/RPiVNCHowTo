@@ -6,6 +6,8 @@ How to install and configure efficient LAN-based VNC on Raspbian
 
 There are several different VNC servers to choose from on Linux and Raspbian, and there are many ways to install and configure VNC. This is one of the most efficient and lightweight VNC implementations for local LAN use. I've documented it so that you can use and enjoy it as well.
 
+Once VNC is set up according to this guide, each user will use their favorite VNC client to connect, and will log in using their own username/password, receiving their own virtual desktop. Each user can customize their virtual desktop as they desire.
+
 This guide assumes that you're installing onto a Raspberry Pi on your local LAN running Raspbian, and does not address any extraordinary security concerns such as firewalls, port forwarding, etc. Depending on how your RPi Raspbian security is configured, VNC may log you directly into a desktop, or you may be prompted for credentials.
 
 These instructions have been tested on 2019-06-20 Raspbian Buster as well as Stretch, and details for both Full and Lite are included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use.
@@ -68,7 +70,9 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
 * If you don't want a graphical login on the Raspberry Pi HDMI port sudo Edit `/etc/X11/xdm/Xservers` and comment out the line `:0 local /usr/bin/X :0 vt7 -nolisten tcp`. 
 * `sudo systemctl try-restart xdm.service` to restart the service with the new settings
 
-**Note**If your system has lightdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers once they are both installed, use `dpkg-reconfigure lightdm`.
+The file edit-xdm-config (located on this github) makes the above modifications automatically.
+
+**Note**: If your system has lightdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers once they are both installed, use `dpkg-reconfigure lightdm`.
 
 ### VNC Service configuration
 

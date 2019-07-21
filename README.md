@@ -59,7 +59,7 @@ enabled=true
 port=177
 ```
 
-`sudo systemctl try-restart lightdm.service` to restart the service with the new settings.
+`sudo systemctl restart lightdm.service` to restart the service with the new settings.
 
 #### xdm Configuration
 
@@ -68,7 +68,7 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
 * sudo Edit `/etc/X11/xdm/xdm-config` and comment out the line *DisplayManager.requestPort* with a "!"
 * sudo Edit `/etc/X11/xdm/Xaccess` and uncomment the line that has *#any host can get a login window*
 * If you don't want a graphical login on the Raspberry Pi HDMI port sudo Edit `/etc/X11/xdm/Xservers` and comment out the line `:0 local /usr/bin/X :0 vt7 -nolisten tcp`. 
-* `sudo systemctl try-restart xdm.service` to restart the service with the new settings
+* `sudo systemctl restart xdm.service` to restart the service with the new settings
 
 The file edit-xdm-config (located on this github) makes the above modifications automatically.
 

@@ -1,11 +1,26 @@
 #!/bin/bash
 
+function askyn() {
+    local ans
+    echo -n "$1" '[y/n]? ' ; read $2 ans
+    case "$ans" in
+        y*|Y*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
 echo""
 echo "** Editing xdm config files..."
 
 sudo sed -i "s/DisplayManager.requestPort:	0/\!DisplayManager.requestPort:	0/" /etc/X11/xdm/xdm-config
 sudo sed -i "s/\#\*					#any host can get a login window/\*					#any host can get a login window/"  /etc/X11/xdm/Xaccess
-sudo sed -i "s/\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/\#\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/"  /etc/X11/xdm/Xservers
 
-sudo systemctl try-restart xdm.service
+if ! askyn "Do you want xdm enabled on the console screen"
+then
+    sudo sed -i "s/\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/\#\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/"  /etc/X11/xdm/Xservers
+else
+    sudo sed -i "s/#\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/\\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/"  /etc/X11/xdm/Xservers
+fi
+echo "% Don't forget to 'sudo systemctl restart xdm.service' or reboot"
+
 

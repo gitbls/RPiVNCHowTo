@@ -76,25 +76,26 @@ The edit-xdm-config script (on this github) makes the above modifications automa
 
 ### VNC Service configuration
 
-* Create or download and update the systemd VNC configuration files as appropriate. Each VNC service, consisting of a .socket and .service file pair, implements a single screen resolution.
-    * Build the socket/service pair files
+* A systemd socket/service conifg file pair is required for each VNC port, and each port will implement a single screen resolution. You can easily create the socket/service pair files with the make-systemd-xvnc script (on this github) or you can create your own (but make-systemd-xvnc is MUCH easier).
         * Use the make-systemd-xvnc script (on this github) to easily generate usable configurations
-        * To download the prototype files from the bottom of this document
+        * To download the prototype files from the bottom of this document (make-systemd-xvnc replaces this)
             * Bash> cd /etc/systemd/system
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0.socket
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
-    * Edit the VNC configuration files as needed
-        * sudo Edit the .service files, which are in /etc/systemd/system
+    * Edit the VNC configuration files as needed. If you used make-systemd-xvnc you should not need to modify them unless you run into a problem.
+        * If you need to edit them, sudo Edit the .service files as appropriate, located in /etc/systemd/system
         * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc<span>0@.</span>service. For my 1900x1080 laptop I use 1880x960, which I've put in the file xvnc<span>1@.</span>service (with a corresponding xvnc1.socket file.
-        * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred<span>@.</span>service if you'd prefer)
+        * The filenames for the .socket and the .service file must match, except for the @ in the .service filename.
         * The @ in the filename is important. When a VNC connection is made, a new service is started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
-* `sudo systemctl daemon-reload` - Must be done when systemd configuration files are modified.
+* `sudo systemctl daemon-reload` - Must be done when systemd configuration files are modified. If you use make-systemd-xvnc you are given the option of performing the reload and starting the sockets.
 * Start the VNC service connections. For each one you've created (e.g., xvnc0 and xvnc1 in this example), start the socket and enable it across reboots:
     * `sudo systemctl start xvnc0.socket` - Starts the socket in the running system
     * `sudo systemctl enable xvnc0.socket` - Sets the socket to start after the system reboots
 * **Test** that you can use a VNC client to connect to your server. 
 
 If additional VNC resolutions are needed, copy the xvnc0* files to, for instance, xvnc1.socket and xvnc<span>1@.</span>service. Then, sudo Edit the .socket file to change the socket number (increase by 1 from the previous), and sudo Edit the .service file to change the resolution. After the files are appropriately updated, issue the above sudo systemctl daemon-reload/start/enable command sequence for the new socket.
+
+make-systemd-xvnc looks for existing socket/service pair files, and if found will ask if you want to replace or create additional pairs. Newly-create pairs are numbered following the last xvnc socket/service pair file.
 
 ## How does this work?
 

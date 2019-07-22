@@ -70,18 +70,18 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
 * If you don't want a graphical login on the Raspberry Pi HDMI port sudo Edit `/etc/X11/xdm/Xservers` and comment out the line `:0 local /usr/bin/X :0 vt7 -nolisten tcp`. 
 * `sudo systemctl restart xdm.service` to restart the service with the new settings
 
-The edit-xdm-config script (on this github) makes the above modifications automatically.
+The edit-xdm-config script (on this github) can be used to make the modifications to xdm-config and Xaccess.
 
 **Note**: If your system has lightdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers once they are both installed, use `dpkg-reconfigure lightdm`.
 
 ### VNC Service configuration
 
-* A systemd socket/service conifg file pair is required for each VNC port, and each port will implement a single screen resolution. You can easily create the socket/service pair files with the make-systemd-xvnc script (on this github) or you can create your own (but make-systemd-xvnc is MUCH easier).
+* A systemd socket/service config file pair is required for each VNC port, and each port will implement a single screen resolution. You can easily create the socket/service pair files with the make-systemd-xvnc script (on this github) or you can create your own in /etc/systemd/system (but make-systemd-xvnc is MUCH easier).
     * Edit the VNC configuration files as needed. If you used make-systemd-xvnc you should not need to modify them unless you run into a problem.
         * If you need to edit them, sudo Edit the .service files as appropriate, located in /etc/systemd/system
         * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc<span>0@.</span>service. For my 1900x1080 laptop I use 1880x960, which I've put in the file xvnc<span>1@.</span>service (with a corresponding xvnc1.socket file.
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename.
-        * The @ in the filename is important. When a VNC connection is made, a new service is started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
+        * The @ in the filename is important. When a VNC connection is made, a new service is automatically started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
 * `sudo systemctl daemon-reload` - Must be done when systemd configuration files are modified. If you use make-systemd-xvnc you are given the option of performing the reload and starting the sockets.
 * Start the VNC service connections. For each one you've created (e.g., xvnc0 and xvnc1 in this example), start the socket and enable it across reboots:
     * `sudo systemctl start xvnc0.socket` - Starts the socket in the running system

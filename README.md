@@ -76,15 +76,15 @@ The file edit-xdm-config (located on this github) makes the above modifications 
 
 ### VNC Service configuration
 
-* Create or download and update the systemd VNC configuration files as appropriate. Each VNC service, consisting of a .socket and .service file paie, implements a single screen resolution.
+* Create or download and update the systemd VNC configuration files as appropriate. Each VNC service, consisting of a .socket and .service file pair, implements a single screen resolution.
     * Download (or create) the files
         * You can download the files or copy/paste them from the bottom of this document
         * To download:
-            * Bash> cd /lib/systemd/system
+            * Bash> cd /etc/systemd/system
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0.socket
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
     * Edit the VNC configuration files
-        * sudo Edit the .service files, which are in /lib/systemd/system
+        * sudo Edit the .service files, which are in /etc/systemd/system
         * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc<span>0@.</span>service. For my 1900x1080 laptop I use 1880x960, which I've put in the file xvnc<span>1@.</span>service (with a corresponding xvnc1.socket file.
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred<span>@.</span>service if you'd prefer)
         * The @ in the filename is important. When a VNC connection is made, a new service is started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.

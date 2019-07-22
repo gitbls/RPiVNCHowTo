@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# Prompts for VNC screen resolutions and builds the appropriate xvnc .socket/.service files
+# Must be run as root
+#
+
+
+function askyn() {
+    local ans
+    echo -n "$1" '[y/n]? ' ; read $2 ans
+    case "$ans" in
+        y*|Y*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+
+[[ ! $EUID -eq 0 ]] && notroot=0 || notroot=1
+    
+#    echo "? Please start with 'sudo $0'"
+
+if [ "$1" == "" ]
+then
+    [ $notroot -eq 0 ] && echo "? You must be root to write to the system" && echo "  Or start with 'sudo $0'" && exit
+    sdir="/etc/systemd/system"
+else
+    sdir="$1"
+fi
+
+#
+# See if old xvnc*.socket files exist
+#
+n=0
+if [ -f "$sdir/xvnc0.socket" ]
+then
+    echo "% xvnc* systemd socket/service pairs already exist"
+    echo "  You can replace them or create new ones at the end of the 'list'"
+    echo "  Enter Y to replace existing files or N to leave existing files and add new socket/service pairs"
+    if ! askyn " Do you want to replace the existing xvnc* socket/services?"
+    then
+	while [ -f "$sdir/xvnc$n.socket" ]
+	do
+	    n=$(($n+1))
+	done
+    else
+	rm -f $sdir/xvnc*.socket $sdir/xvnc*@.service
+    fi
+fi
+
+while [ 0 ]
+do
+    echo -n "VNC resolution for VNC$n: "
+    res=$(read ans; echo $ans)
+    [ "$res" == "" ] && break
+    echo "% Creating VNC socket/service pair for VNC$n with resolution $res"
+    port=$((5900+$n))
+    cat > $sdir/xvnc$n.socket <<EOF
+[Unit]
+Description=XVNC Server
+
+[Socket]
+ListenStream=$port
+Accept=yes
+
+[Install]
+WantedBy=sockets.target
+EOF
+    cat > $sdir/xvnc$n@.service <<EOF
+[Unit]
+Description=XVNC Per-Connection Daemon
+
+[Service]
+ExecStart=-/usr/bin/Xvnc -noreset -inetd -query 127.0.0.1 -geometry $res -pn -once -SecurityTypes None
+User=nobody
+StandardInput=socket
+StandardOutput=socket
+StandardError=syslog
+EOF
+    n=$(($n+1))
+done
+
+if [ $notroot -eq 1 ]
+then
+    echo "systemctl daemon-reload"
+    systemctl daemon-reload
+    if askyn "Start/restart VNC sockets"
+    then
+	for (( i=0; i<$n; i++))
+	do
+	    echo "systemctl restart xvnc$i.socket"
+	    systemctl restart xvnc$i.socket
+	done
+    fi
+    echo "% Don't forget to 'sudo systemctl enable' the sockets so they restart on reboot"
+fi
+

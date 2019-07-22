@@ -70,20 +70,20 @@ xdm is a lightweight Display Manager with less capabilities than lightdm. That s
 * If you don't want a graphical login on the Raspberry Pi HDMI port sudo Edit `/etc/X11/xdm/Xservers` and comment out the line `:0 local /usr/bin/X :0 vt7 -nolisten tcp`. 
 * `sudo systemctl restart xdm.service` to restart the service with the new settings
 
-The file edit-xdm-config (located on this github) makes the above modifications automatically.
+The edit-xdm-config script (on this github) makes the above modifications automatically.
 
 **Note**: If your system has lightdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers once they are both installed, use `dpkg-reconfigure lightdm`.
 
 ### VNC Service configuration
 
 * Create or download and update the systemd VNC configuration files as appropriate. Each VNC service, consisting of a .socket and .service file pair, implements a single screen resolution.
-    * Download (or create) the files
-        * You can download the files or copy/paste them from the bottom of this document
-        * To download:
+    * Build the socket/service pair files
+        * Use the make-systemd-xvnc script (on this github) to easily generate usable configurations
+        * To download the prototype files from the bottom of this document
             * Bash> cd /etc/systemd/system
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0.socket
             * Bash> sudo wget ht<span>tps://</span>raw.githubusercontent.com/gitbls/RPiVNCHowTo/master/xvnc0%40.service
-    * Edit the VNC configuration files
+    * Edit the VNC configuration files as needed
         * sudo Edit the .service files, which are in /etc/systemd/system
         * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc<span>0@.</span>service. For my 1900x1080 laptop I use 1880x960, which I've put in the file xvnc<span>1@.</span>service (with a corresponding xvnc1.socket file.
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename. (Yes, you can name them fred.socket and fred<span>@.</span>service if you'd prefer)

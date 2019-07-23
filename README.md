@@ -63,7 +63,7 @@ port=177
 
 #### xdm Configuration
 
-xdm is a lightweight Display Manager with less capabilities than lightdm. That said, I've found it to consume less system resources than lightdm, and coupled with choosewm (see Appendix below), meets my needs.
+xdm is a lightweight Display Manager with less capabilities than lightdm. That said, I've found it to consume less system resources than lightdm, and meets my needs when coupled with choosewm (see Appendix below).
 
 * sudo Edit `/etc/X11/xdm/xdm-config` and comment out the line *DisplayManager.requestPort* with a "!"
 * sudo Edit `/etc/X11/xdm/Xaccess` and uncomment the line that has *#any host can get a login window*

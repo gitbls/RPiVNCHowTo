@@ -70,7 +70,7 @@ EOF
 Description=XVNC Per-Connection Daemon
 
 [Service]
-ExecStart=-/usr/bin/Xvnc -noreset -inetd -query 127.0.0.1 -geometry $res -pn -once -SecurityTypes None
+ExecStart=-/usr/bin/Xtigervnc -noreset -inetd -query 127.0.0.1 -geometry $res -pn -once -SecurityTypes None
 User=nobody
 StandardInput=socket
 StandardOutput=socket

@@ -30,7 +30,12 @@ Full Raspbian comes with the realvnc-vnc-server package installed. You can remov
 
 * `sudo apt-get install tigervnc-standalone-server tigervnc-common xfonts-scalable xfonts-100dpi xfonts-75dpi`
 
-Continue with the System Configuration below.
+Continue by performing the following steps, detailed under System Configuration below:
+
+* Edit /etc/lightdm/lightdm.conf and enable XDMCPServer
+* Create the xvnc service files as documented in VNC Service Configuration
+* sudo systemctl enable xvnc0.socket, and any other sockets that you've created
+* Reboot and you're done!
 
 ## Installing onto Raspbian Lite
 

@@ -160,8 +160,8 @@ xsetroot -solid black
 #
 # run choosewm (which will run the selected wm) or the default wm
 #
-[ -f "$xchoose" ] && exec $xchoose
-[ -f "$wm" ] && exec $wm
+[ -x "$xchoose" ] && exec $xchoose
+[ -x "$wm" ] && exec $wm
 #
 # If we get here, something is wrong, so run an xterm
 #

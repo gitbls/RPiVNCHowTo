@@ -13,7 +13,7 @@ This guide assumes that you're installing onto a Raspberry Pi on your local LAN 
 These instructions have been tested on 2019-07-10 Raspbian Buster as well as Stretch, and details for both Full and Lite are
 included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use.
 
-At the current time, this method only supports VNC virtual desktops. I expect to implement the ability to connect to the
+At the current time, this method only supports VNC *virtual desktops*. I expect to implement the ability to connect to the
 HDMI console in the near future. If there are specific features or configurations that you'd like to see implemented with this,
 please post an issue on this github.
 

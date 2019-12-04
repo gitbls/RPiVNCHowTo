@@ -1,6 +1,6 @@
 # RPiVNCHowTo
 
-How to install and configure efficient LAN-based VNC on Raspbian
+How to install and configure efficient LAN-based VNC for virtual desktops on Raspbian
 
 ## Overview
 
@@ -10,7 +10,12 @@ Once VNC is set up according to this guide, each user will use their favorite VN
 
 This guide assumes that you're installing onto a Raspberry Pi on your local LAN running Raspbian, and does not address any extraordinary security concerns such as firewalls, port forwarding, etc. Depending on how your RPi Raspbian security is configured, VNC may log you directly into a desktop, or you may be prompted for credentials.
 
-These instructions have been tested on 2019-07-10 Raspbian Buster as well as Stretch, and details for both Full and Lite are included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use.
+These instructions have been tested on 2019-07-10 Raspbian Buster as well as Stretch, and details for both Full and Lite are
+included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use.
+
+At the current time, this method only supports VNC virtual desktops. I expect to implement the ability to connect to the
+HDMI console in the near future. If there are specific features or configurations that you'd like to see implemented with this,
+please post an issue on this github.
 
 **NOTE: **This method can be used on other Linux distros with a recent systemd implementations, although minor adjustments will be required.
 

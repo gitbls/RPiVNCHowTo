@@ -47,6 +47,11 @@ then
     fi
 fi
 
+echo ""
+echo "Enter VNC resolutions as desired"
+echo "Each will be assigned a successive VNC port"
+echo "Press Enter by itself to complete"
+echo ""
 while [ 0 ]
 do
     echo -n "VNC resolution for VNC$n: "

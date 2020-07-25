@@ -1,25 +1,28 @@
 # RPiVNCHowTo
 
-How to install and configure efficient LAN-based VNC for virtual desktops on Raspbian
+How to install and configure efficient LAN-based VNC for virtual desktops on Raspberry Pi OS (RasPiOS).
 
 ## Overview
 
-There are several different VNC servers to choose from on Linux and Raspbian, and there are many ways to install and configure VNC. This is one of the most efficient and lightweight VNC implementations for local LAN use. I've documented it so that you can use and enjoy it as well.
+There are several different VNC servers to choose from on Linux and RasPiOS, and there are many ways to install and configure VNC. This is one of the most efficient and lightweight VNC implementations for local LAN use. I've documented it so that you can use and enjoy it as well.
 
 Once VNC is set up according to this guide, each user will use their favorite VNC client to connect, and will log in using their own username/password, receiving their own virtual desktop. Each user can customize their virtual desktop as they desire.
 
-This guide assumes that you're installing onto a Raspberry Pi on your local LAN running Raspbian, and does not address any extraordinary security concerns such as firewalls, port forwarding, etc. Depending on how your RPi Raspbian security is configured, VNC may log you directly into a desktop, or you may be prompted for credentials.
+This guide assumes that you're installing onto a Raspberry Pi on your local LAN running RasPiOS, and does not address any extraordinary security concerns such as firewalls, port forwarding, etc. Depending on how your RPi RasPiOS security is configured, VNC may log you directly into a desktop, or you may be prompted for credentials. 
 
-These instructions have been tested on 2019-07-10 Raspbian Buster as well as Stretch, and details for both Full and Lite are
-included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use.
+These instructions have been tested on 2020-05-27 RasPiOS Buster as well as Raspbian Stretch, and details for both Full and Lite are included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use. 
 
-At the current time, this method only supports VNC *virtual desktops*. I expect to implement the ability to connect to the
-HDMI console in the near future. If there are specific features or configurations that you'd like to see implemented with this,
-please post an issue on this github.
+At the current time, this method only supports VNC *virtual desktops*. I expect to implement the ability to connect to the HDMI console in the near future. If there are specific features or configurations that you'd like to see implemented with this, please post an issue on this github.
 
-**NOTE: **This method can be used on other Linux distros with a recent systemd implementations, although minor adjustments will be required.
+**NOTE: **This method can be used on other Linux distros with a recent systemd implementations, although minor adjustments will be
+  required. These instructions have been tested on a few other Linux distros. If your distro is relatively modern and supports systemd, these
+should work on your system. If they don't, please let me know!
 
-There are (at least) 3 different VNC servers provided with Raspbian. **RealVNC** provides a cloud-based solution, and is quite elegant. However, it may require that you have an account with the RealVNC service in the cloud. This may be a bit over-the-top for a LAN-based configuration.
+There are (at least) 3 different VNC servers provided with RasPiOS. **RealVNC** is quite elegant, comes pre-installed on RaspiOS
+Full Desktop, and can be used on a LAN without a RealVNC Cloud account. Using a RealVNC Cloud account provides additional
+functionality. RealVNC for personal use is Free, and if you use a Cloud account there is a limit of 5 internet-connected computers.
+
+But, Linux is all about choice, and there are at least 2 other VNC servers available on Linux. The rest of this document is about how to most effectively configure these other VNC servers.
 
 **TightVNC** is a very nice VNC server, as well, but I found that at least one font was not always displayed correctly (9x15bold, specifically, which I have used for far too long in my xterm windows).
 
@@ -29,9 +32,9 @@ TigerVNC (and TightVNC and RealVNC as well) provide a tool that greatly simplifi
 
 *Should you use /usr/bin/vncserver or this method?* If you have never typed into a terminal on Linux, `vncserver` was made for you. On the other hand, if you're moderately comfortable working with the Linux bash command line and are able to make simple file edits, the method documented here is a much efficient.
 
-## Installing onto Raspbian Full
+## Installing onto RasPiOS Full
 
-Full Raspbian comes with the realvnc-vnc-server package installed. You can remove it or not. Then execute the following commands:
+Full RasPiOS comes with the realvnc-vnc-server package installed. You can remove it or not. Then execute the following commands:
 
 * `sudo apt-get install tigervnc-standalone-server tigervnc-common xfonts-scalable xfonts-100dpi xfonts-75dpi`
 
@@ -42,9 +45,9 @@ Continue by performing the following steps, detailed under System Configuration 
 * sudo systemctl enable xvnc0.socket, and any other sockets that you've created
 * Reboot and you're done!
 
-## Installing onto Raspbian Lite
+## Installing onto RasPiOS Lite
 
-Lite Raspbian is exactly that...Lite. You'll need to install a few more packages. 
+Lite RasPiOS is exactly that...Lite. You'll need to install a few more packages. 
 
 * `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
 * `sudo apt-get install tigervnc-standalone-server tigervnc-common package xfonts-100dpi xfonts-75dpi xfonts-scalable`
@@ -57,7 +60,7 @@ This section details the system configuration changes to enable VNC.
 
 ### Display Manager Configuration
 
-The most popular Display Manager is lightdm, and lightdm is installed by default on Raspbian Full. I've documented xdm as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
+The most popular Display Manager is lightdm, and lightdm is installed by default on RasPiOS Full. I've documented xdm as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
 
 #### Lightdm Configuration
 

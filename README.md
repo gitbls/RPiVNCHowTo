@@ -12,8 +12,6 @@ This guide assumes that you're installing onto a Raspberry Pi on your local LAN 
 
 These instructions have been tested on 2020-05-27 RasPiOS Buster as well as Raspbian Stretch, and details for both Full and Lite are included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use. 
 
-At the current time, this method only supports VNC *virtual desktops*. I expect to implement the ability to connect to the HDMI console in the near future. If there are specific features or configurations that you'd like to see implemented with this, please post an issue on this github.
-
 **NOTE: **This method can be used on other Linux distros with a recent systemd implementations, although minor adjustments will be
   required. These instructions have been tested on a few other Linux distros. If your distro is relatively modern and supports systemd, these
 should work on your system. If they don't, please let me know!
@@ -23,6 +21,8 @@ Full Desktop, and can be used on a LAN without a RealVNC Cloud account. Using a 
 functionality. RealVNC for personal use is Free, and if you use a Cloud account there is a limit of 5 internet-connected computers.
 
 But, Linux is all about choice, and there are at least 2 other VNC servers available on Linux. The rest of this document is about how to most effectively configure these other VNC servers.
+
+This method only supports VNC *virtual desktops*. If you want to connect to the system console, you probably want to do it for the best performance. In that case, you should probably use RealVNC, which is much more optimized for that use case.
 
 **TightVNC** is a very nice VNC server, as well, but I found that at least one font was not always displayed correctly (9x15bold, specifically, which I have used for far too long in my xterm windows).
 
@@ -104,6 +104,10 @@ The edit-xdm-config script (on this github) can be used to make the above modifi
 If you are using make-systemd-xvnc you can easily create all the socket/service pairs. When you create them manually, if additional VNC resolutions are needed, copy the xvnc0* files to, for instance, xvnc1.socket and xvnc<span>1@.</span>service. Then, sudo Edit the .socket file to change the socket number (increase by 1 from the previous), and sudo Edit the .service file to change the resolution. After the files are appropriately updated, issue the above sudo systemctl daemon-reload/start/enable command sequence for the new socket.
 
 make-systemd-xvnc looks for existing socket/service pair files, and if found will ask if you want to replace or create additional pairs. Newly-create pairs are numbered following the last xvnc socket/service pair file.
+
+## What about using this remotely? Is it secure?
+
+The VNC protocol by itself is insecure, so you shouldn't use it over insecure networks, such as the internet, without taking precautions. With the solution documented here you need to use a VPN or similar solution (ssh, meet-in-the middle, etc) to ensure a secure connection. As an aside, I assume that RealVNC's Cloud Connections use an enhnaced VNC protocol to ensure high security.
 
 ## How does this work?
 

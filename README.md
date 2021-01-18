@@ -12,6 +12,8 @@ This guide assumes that you're installing onto a Raspberry Pi on your local LAN 
 
 These instructions have been tested on 2020-05-27 RasPiOS Buster as well as Raspbian Stretch, and details for both Full and Lite are included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use. 
 
+If you find this useful, please consider starring it to help me understand how many people are using it. Thanks!
+
 **NOTE: **This method can be used on other Linux distros with a recent systemd implementations, although minor adjustments will be
   required. These instructions have been tested on a few other Linux distros. If your distro is relatively modern and supports systemd, these
 should work on your system. If they don't, please let me know!

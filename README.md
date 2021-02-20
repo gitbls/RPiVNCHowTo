@@ -34,6 +34,14 @@ TigerVNC (and TightVNC and RealVNC as well) provide a tool that greatly simplifi
 
 *Should you use /usr/bin/vncserver or this method?* If you have never typed into a terminal on Linux, `vncserver` was made for you. On the other hand, if you're moderately comfortable working with the Linux bash command line and are able to make simple file edits, the method documented here is a much efficient.
 
+## A Note about RealVNC and these virtual desktops
+
+It is absolutely possible to use RealVNC and virtual desktops enabled by this github on the same system. In fact, if you'd like to do this as easily as possible, I encourage to take a close look at [sdm](https://github.com/gitbls/sdm). sdm makes it super-easy to configure RasPiOS (Desktop or Lite) with all your favorite settings, apps and configurations (my fairly fully-loaded IMG takes about 10 minutes to configure on a Pi4). Then, when you need a new SD Card, you just burn one from your customized image. The system comes up with all Localization settings in place, WiFi configured, apps installed, etc. And, one of the things that sdm will configure for you is VNC. Have a look!
+
+But, if you'd prefer to not use sdm, that's fine. RealVNC Server (which attaches to the Pi4 graphical console) works great with virtual desktops installed using the technique on this github. Prior to Feb 20 2020 the virtual desktops were assigned to ports starting at 5900. Unfortunately, RealVNC Server uses port 5900. So, the script on this site now skips 5900. The text below does as well.
+
+So, either using sdm or this technique, if you want to have RealVNC and VNC Virtual Desktops on the same system, it just works.
+
 ## Installing onto RasPiOS Full
 
 Full RasPiOS comes with the realvnc-vnc-server package installed. You can remove it or not. Then execute the following commands:
@@ -44,16 +52,19 @@ Continue by performing the following steps, detailed under System Configuration 
 
 * Edit /etc/lightdm/lightdm.conf and enable XDMCPServer
 * Create the xvnc service files as documented in VNC Service Configuration
-* sudo systemctl enable xvnc0.socket, and any other sockets that you've created
+* sudo systemctl enable xvnc1.socket, and any other sockets that you've created
 * Reboot and you're done!
+* DO NOT install any of the packages suggested below for RasPiOS Lite.
+
+NOTE: If you are going to have multiple different users login to the same Pi, you'll need to disable AutoLogin in `sudo raspi-config`: System Options, S5(Boot/Auto Login), and then set B3 (Desktop).
 
 ## Installing onto RasPiOS Lite
 
-Lite RasPiOS is exactly that...Lite. You'll need to install a few more packages. 
+RasPiOS Lite is exactly that...Lite. You'll need to install a few more packages. 
 
 * `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
 * `sudo apt-get install tigervnc-standalone-server tigervnc-common package xfonts-100dpi xfonts-75dpi xfonts-scalable`
-* You'll need a *Display Manager*. I prefer xdm, but lightdm is another good choice. `sudo apt-get install xdm` or `sudo apt-get install lightdm` as appropriate.
+* You'll need a *Display Manager*. I prefer xdm, but wdm and lightdm are good choices as well. `sudo apt-get install xdm` or `sudo apt-get install lightdm` as appropriate.
 * You'll also need a *Window Manager*. I prefer icewm, but you might prefer something different. In any case, you'll need to `sudo apt-get install` your Window Manager of choice.
 
 ## System Configuration
@@ -73,6 +84,8 @@ sudo Edit `/etc/lightdm/lightdm.conf` and modify the XDMCPServer section as foll
 enabled=true
 port=177
 ```
+
+The script edit-lightdm-config on this github can be used to make this edit.
 
 `sudo systemctl restart lightdm.service` to restart the service with the new settings.
 
@@ -94,16 +107,17 @@ The edit-xdm-config script (on this github) can be used to make the above modifi
 * A systemd socket/service config file pair is required for each VNC port, and each port will implement a single screen resolution. You can easily create the socket/service pair files with the make-systemd-xvnc script (on this github) or you can create your own in /etc/systemd/system (but make-systemd-xvnc is MUCH easier).
     * Edit the VNC configuration files as needed. If you used make-systemd-xvnc you should not need to modify them unless you run into a problem.
         * If you need to edit them, sudo Edit the .service files as appropriate, located in /etc/systemd/system
-        * Change the resolution in xvnc<span>0@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc<span>0@.</span>service. For my 1900x1080 laptop I use 1880x960, which I've put in the file xvnc<span>1@.</span>service (with a corresponding xvnc1.socket file).
+        * Change the resolution in xvnc<span>1@</span>.service as desired. I like my VNC window to be nearly full screen size on my 1900x1200 monitor, so I use 1880x1100, which is the setting in xvnc<span>1@.</span>service. For my 1900x1080 laptop I use 1880x960, which I've put in the file xvnc<span>2@.</span>service (with a corresponding xvnc2.socket file).
         * The filenames for the .socket and the .service file must match, except for the @ in the .service filename.
-        * The @ in the filename is important. When a VNC connection is made, a new service is automatically started with the name similar to xvnc0@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
+        * The @ in the filename is important. When a VNC connection is made, a new service is automatically started with the name similar to xvnc1@n-serveripaddr:port-remoteipaddr:port.service. the @ enables that.
 * `sudo systemctl daemon-reload` - Must be done when systemd configuration files are modified. If you use make-systemd-xvnc you are given the option of performing the reload and starting the sockets.
-* Start the VNC service connections. For each one you've created (e.g., xvnc0 and xvnc1 in this example), start the socket and enable it across reboots:
-    * `sudo systemctl start xvnc0.socket` - Starts the socket in the running system
-    * `sudo systemctl enable xvnc0.socket` - Sets the socket to start after the system reboots
+* Start the VNC service connections. For each one you've created (e.g., xvnc1 and xvnc2 in this example), start the socket and enable it across reboots:
+    * `sudo systemctl start xvnc1.socket` - Starts the socket in the running system
+    * `sudo systemctl enable xvnc1.socket` - Sets the socket to start after the system reboots
+    * `sudo systemctl enable --now xvnc1.socket` - Starts the socket in the running system and sets the socket to start after system reboots
 * **Test** that you can use a VNC client to connect to your server. 
 
-If you are using make-systemd-xvnc you can easily create all the socket/service pairs. When you create them manually, if additional VNC resolutions are needed, copy the xvnc0* files to, for instance, xvnc1.socket and xvnc<span>1@.</span>service. Then, sudo Edit the .socket file to change the socket number (increase by 1 from the previous), and sudo Edit the .service file to change the resolution. After the files are appropriately updated, issue the above sudo systemctl daemon-reload/start/enable command sequence for the new socket.
+If you are using make-systemd-xvnc you can easily create all the socket/service pairs. When you create them manually, if additional VNC resolutions are needed, copy the xvnc1* files to, for instance, xvnc2.socket and xvnc<span>2@.</span>service. Then, sudo Edit the .socket file to change the socket number (increase by 1 from the previous), and sudo Edit the .service file to change the resolution. After the files are appropriately updated, issue the above sudo systemctl daemon-reload/start/enable command sequence for the new socket.
 
 make-systemd-xvnc looks for existing socket/service pair files, and if found will ask if you want to replace or create additional pairs. Newly-create pairs are numbered following the last xvnc socket/service pair file.
 
@@ -113,7 +127,7 @@ The VNC protocol by itself is insecure, so you shouldn't use it over insecure ne
 
 ## How does this work?
 
-Once you start the xvnc0.socket, the systemd process listens on the specified TCP port. When a network connect lands on that port, systemd starts the service described by the .service file with the filename corresponding to the socket name. This is quite simple and elegant, and it *just works*.
+Once you start the xvnc1.socket, the systemd process listens on the specified TCP port. When a network connect lands on that port, systemd starts the service described by the .service file with the filename corresponding to the socket name. This is quite simple and elegant, and it *just works*.
 
 In the event that it doesn't, see the next section.
 
@@ -123,23 +137,23 @@ If things aren't working correctly, the best approach is to look at the system l
 
 ## systemd configuration file listings
 
-### xvnc0.socket
+### xvnc1.socket
 
-The .socket file describes the socket to systemd. VNC socket numbers start at 5900. It is suggested that you maintain these in sequential order, so that a) the stream number can be inferred from the filename (e.g., xvnc0=5900, xvnc1=5901, etc), and your future sanity is not jeapordized.
+The .socket file describes the socket to systemd. VNC socket numbers start at 5900, but avoid using 5900 in case you ever want to use RealVNC Server. It is suggested that you maintain these in sequential order, so that a) the stream number can be inferred from the filename (e.g., xvnc1=5901, xvnc2=5902, etc), and your future sanity is not jeapordized.
 
 ```
 [Unit]
 Description=XVNC Server
 
 [Socket]
-ListenStream=5900
+ListenStream=5901
 Accept=yes
 
 [Install]
 WantedBy=sockets.target
 ```
 
-### xvnc<span>0@.</span>service
+### xvnc<span>1@.</span>service
 
 ```
 [Unit]

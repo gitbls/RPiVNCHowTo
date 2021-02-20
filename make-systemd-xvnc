@@ -31,7 +31,7 @@ fi
 # See if old xvnc*.socket files exist
 #
 n=0
-if [ -f "$sdir/xvnc0.socket" ]
+if [ -f "$sdir/xvnc1.socket" ]
 then
     echo "% xvnc* systemd socket/service pairs already exist"
     echo "  You can replace them or create new ones at the end of the 'list'"
@@ -44,6 +44,7 @@ then
 	done
     else
 	rm -f $sdir/xvnc*.socket $sdir/xvnc*@.service
+	n=1          # Start at 1, not 0
     fi
 fi
 
@@ -90,7 +91,7 @@ then
     systemctl daemon-reload
     if askyn "Start/restart VNC sockets"
     then
-	for (( i=0; i<$n; i++))
+	for (( i=1; i<$n; i++))
 	do
 	    echo "systemctl restart xvnc$i.socket"
 	    systemctl restart xvnc$i.socket

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo""
+echo "** Editing lightdm config file..."
+sed -i "s/\[XDMCPServer\]/\[XDMCPServer\]\nenabled=true\nport=177/" /etc/lightdm/lightdm.conf

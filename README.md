@@ -14,7 +14,7 @@ These instructions have been tested on 2020-05-27 RasPiOS Buster as well as Rasp
 
 If you find this useful, please consider starring it to help me understand how many people are using it. Thanks!
 
-**NOTE: **This method can be used on other Linux distros with a recent systemd implementations, although minor adjustments will be
+NOTE: This method can be used on other Linux distros with a recent systemd implementation, although minor adjustments will be
   required. These instructions have been tested on a few other Linux distros. If your distro is relatively modern and supports systemd, these
 should work on your system. If they don't, please let me know!
 
@@ -24,7 +24,7 @@ functionality. RealVNC for personal use is Free, and if you use a Cloud account 
 
 But, Linux is all about choice, and there are at least 2 other VNC servers available on Linux. The rest of this document is about how to most effectively configure these other VNC servers.
 
-This method only supports VNC *virtual desktops*. If you want to connect to the system console, you probably want to do it for the best performance. In that case, you should probably use RealVNC, which is much more optimized for that use case.
+This method only supports VNC *virtual desktops*. If you want to connect to the system console, you probably want to do it for the best performance. In that case, you should probably use RealVNC, which is much more optimized for that use case. And note that you can use this technique alongside RealVNC Server, and have the best of both worlds.
 
 **TightVNC** is a very nice VNC server, as well, but I found that at least one font was not always displayed correctly (9x15bold, specifically, which I have used for far too long in my xterm windows).
 
@@ -36,7 +36,9 @@ TigerVNC (and TightVNC and RealVNC as well) provide a tool that greatly simplifi
 
 ## A Note about RealVNC and these virtual desktops
 
-It is absolutely possible to use RealVNC and virtual desktops enabled by this github on the same system. In fact, if you'd like to do this as easily as possible, I encourage to take a close look at [sdm](https://github.com/gitbls/sdm). sdm makes it super-easy to configure RasPiOS (Desktop or Lite) with all your favorite settings, apps and configurations (my fairly fully-loaded IMG takes about 10 minutes to configure on a Pi4). Then, when you need a new SD Card, you just burn one from your customized image. The system comes up with all Localization settings in place, WiFi configured, apps installed, etc. And, one of the things that sdm will configure for you is VNC. Have a look!
+It is absolutely possible to use RealVNC and virtual desktops enabled by this github on the same system. In fact, if you'd like to do this as easily as possible, I encourage to take a close look at [sdm](https://github.com/gitbls/sdm).
+
+sdm makes it super-easy to configure RasPiOS (Desktop or Lite) with all your favorite settings, apps and configurations (my fairly fully-loaded IMG takes about 10 minutes to configure on a Pi4). Then, when you need a new SD Card, you just burn one from your customized image. The system comes up with all Localization settings in place, WiFi configured, apps installed, etc. And, one of the things that sdm will configure for you is VNC. Have a look!
 
 But, if you'd prefer to not use sdm, that's fine. RealVNC Server (which attaches to the Pi4 graphical console) works great with virtual desktops installed using the technique on this github. Prior to Feb 20 2020 the virtual desktops were assigned to ports starting at 5900. Unfortunately, RealVNC Server uses port 5900. So, the script on this site now skips 5900. The text below does as well.
 
@@ -85,7 +87,7 @@ enabled=true
 port=177
 ```
 
-The script edit-lightdm-config on this github can be used to make this edit.
+The edit-lightdm-config script on this github can be used to make this edit.
 
 `sudo systemctl restart lightdm.service` to restart the service with the new settings.
 

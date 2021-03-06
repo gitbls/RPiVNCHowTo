@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Enable/disable xdm on console
+case "$1" in
+    on|start)
+	sed -i "s/\#\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/"  /etc/X11/xdm/Xservers
+	;;
+    off|stop)
+	sed -i "s/\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/\#\:0 local \/usr\/bin\/X :0 vt7 -nolisten tcp/"  /etc/X11/xdm/Xservers
+	;;
+    *)
+	echo "? Must specify 'start', 'stop', 'on' or 'off'"
+	exit
+	;;
+esac
+systemctl restart xdm

@@ -30,14 +30,15 @@ fi
 #
 # See if old xvnc*.socket files exist
 #
-n=0
-if [ -f "$sdir/xvnc1.socket" ]
+n=1
+if [ -f "$sdir/xvnc0.socket" ]
 then
     echo "% xvnc* systemd socket/service pairs already exist"
     echo "  You can replace them or create new ones at the end of the 'list'"
     echo "  Enter Y to replace existing files or N to leave existing files and add new socket/service pairs"
     if ! askyn " Do you want to replace the existing xvnc* socket/services?"
     then
+	n=0
 	while [ -f "$sdir/xvnc$n.socket" ]
 	do
 	    n=$(($n+1))

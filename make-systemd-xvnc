@@ -17,8 +17,6 @@ function askyn() {
 
 [[ ! $EUID -eq 0 ]] && notroot=0 || notroot=1
     
-#    echo "? Please start with 'sudo $0'"
-
 if [ "$1" == "" ]
 then
     [ $notroot -eq 0 ] && echo "? You must be root to write to the system" && echo "  Or start with 'sudo $0'" && exit
@@ -27,32 +25,40 @@ else
     sdir="$1"
 fi
 
+# Which VNC server is installed?
+#
+vncsrv=""
+extrasw=""
+[ -f /usr/bin/Xtigervnc ] && vncsrv="/usr/bin/Xtigervnc" && extrasw="-noreset -SecurityTypes None"
+[ -f /usr/bin/Xtightvnc ] && vncsrv="/usr/bin/Xtightvnc"
+[ "$vncsrv" == "" ] && echo "? Cannot find either Xtigervnc or Xtightvnc" && echo "  Please 'sudo apt install' a VNC Server (tigervnc-standalone-server or tightvncserver)" && exit
+echo "% Configuring dynamic VNC to use '$vncsrv'"
 #
 # See if old xvnc*.socket files exist
 #
 n=1
-if [ -f "$sdir/xvnc0.socket" ]
+if [ -f "$sdir/xvnc0.socket" -o -f "$sdir/xvnc1.socket" ]
 then
     echo "% xvnc* systemd socket/service pairs already exist"
     echo "  You can replace them or create new ones at the end of the 'list'"
     echo "  Enter Y to replace existing files or N to leave existing files and add new socket/service pairs"
     if ! askyn " Do you want to replace the existing xvnc* socket/services?"
     then
-	n=0
+	[ -f "$sdir/xvnc0.socket" ] && n=0
 	while [ -f "$sdir/xvnc$n.socket" ]
 	do
 	    n=$(($n+1))
 	done
     else
 	rm -f $sdir/xvnc*.socket $sdir/xvnc*@.service
-	n=1          # Start at 1, not 0
+	n=1
     fi
 fi
 
 echo ""
 echo "Enter VNC resolutions as desired"
 echo "Each will be assigned a successive VNC port"
-echo "Press Enter by itself to complete"
+echo "Press Enter by itself to finish"
 echo ""
 while [ 0 ]
 do
@@ -77,7 +83,7 @@ EOF
 Description=XVNC Per-Connection Daemon $n
 
 [Service]
-ExecStart=-/usr/bin/Xtigervnc -noreset -inetd -query 127.0.0.1 -geometry $res -pn -once -SecurityTypes None
+ExecStart=-$vncsrv $extrasw -inetd -query 127.0.0.1 -geometry $res -pn -once
 User=nobody
 StandardInput=socket
 StandardOutput=socket
@@ -90,14 +96,17 @@ if [ $notroot -eq 1 ]
 then
     echo "systemctl daemon-reload"
     systemctl daemon-reload
-    if askyn "Start/restart VNC sockets"
+    if askyn "Enable and start VNC sockets"
     then
 	for (( i=1; i<$n; i++))
 	do
-	    echo "systemctl restart xvnc$i.socket"
-	    systemctl restart xvnc$i.socket
+	    echo "systemctl stop xvnc$i.socket"
+	    systemctl stop xvnc$i.socket
+	    echo "systemctl enable --now xvnc$i.socket"
+	    systemctl enable --now xvnc$i.socket
 	done
+    else
+	echo "% You must 'sudo systemctl enable each of the xvnc sockets to enable them"
     fi
-    echo "% Don't forget to 'sudo systemctl enable' the sockets so they restart on reboot"
 fi
 

@@ -2,7 +2,7 @@
 Description=XVNC Server
 
 [Socket]
-ListenStream=5900
+ListenStream=5901
 Accept=yes
 
 [Install]

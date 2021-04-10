@@ -1,5 +1,6 @@
 #!/bin/bash
 
-echo""
-echo "** Editing lightdm config file..."
+echo "% Editing lightdm config file..."
+echo "% Making a backup copy in /etc/lightdm/lightdm.conf.orig"
+cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.orig
 sed -i "s/\[XDMCPServer\]/\[XDMCPServer\]\nenabled=true\nport=177/" /etc/lightdm/lightdm.conf

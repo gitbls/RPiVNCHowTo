@@ -14,8 +14,7 @@ These instructions have been tested on RasPiOS Buster as well as Raspbian Stretc
 
 If you find this github useful, please consider starring it to help me understand how many people are using it. Thanks!
 
-NOTE: This can be have been tested and can be used on other Linux distros with a recent systemd implementation, although minor adjustments may be
-  required. If you run into problems, please let me know!
+NOTE: This can be used on other Linux distros with a recent systemd implementation, although minor adjustments may be required. If you run into problems, please let me know!
 
 There are (at least) 3 different VNC servers provided with RasPiOS. **RealVNC** is quite elegant, comes pre-installed on RaspiOS
 Full Desktop, and can be used on a LAN without a RealVNC Cloud account. Using a RealVNC Cloud account provides additional
@@ -41,7 +40,7 @@ sdm makes it super-easy to configure RasPiOS (Desktop or Lite) with all your fav
 
 But, if you'd prefer to not use sdm, that's fine. RealVNC Server (which attaches to the Pi4 graphical console) works great with TigerVNC-powered virtual desktops installed using the technique on this github. Prior to Feb 20 2021 make-systemd-xvnc assigned virtual desktops to ports starting at 5900. Unfortunately, RealVNC Server uses port 5900. So, make-systemd-xvnc and this documentation now skips 5900 for compatibility.
 
-So, either using sdm or this technique, if you want to have RealVNC and TigerVNC-powered Virtual Desktops on the same system, it just works
+So, either using sdm or this technique, if you want to have RealVNC and TigerVNC-powered Virtual Desktops on the same system, it just works.
 
 ## Installing onto RasPiOS Full
 
@@ -64,7 +63,8 @@ NOTE: If you are going to have multiple different users login to the same Pi, yo
 
 RasPiOS Lite is exactly that...Lite. You'll need to install a few more packages. 
 
-* `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
+* **Install** the basic XServer software and xterm
+    * `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
 * **For TigerVNC Server:** `sudo apt-get install tigervnc-standalone-server xfonts-100dpi xfonts-75dpi xfonts-scalable`
 * **For TightVNC server:** `sudo apt-get install tightvncserver xfonts-100dpi xfonts-75dpi xfonts-scalable`
 * You'll need a *Display Manager*. I prefer xdm, but wdm and lightdm are good choices as well. `sudo apt-get install xdm` or `sudo apt-get install lightdm` as appropriate.
@@ -96,16 +96,18 @@ After you've completed this change, `sudo systemctl restart lightdm.service` to 
 
 xdm is a lightweight Display Manager with less capabilities than lightdm. That said, I've found it to consume less system resources than lightdm, and meets my needs when coupled with choosewm (see Appendix below).
 
-* sudo Edit `/etc/X11/xdm/xdm-config` and comment out the line *DisplayManager.requestPort* with a "!"
-* sudo Edit `/etc/X11/xdm/Xaccess` and uncomment the line that has *#any host can get a login window*
-* If you don't want a graphical login on the Raspberry Pi HDMI port sudo Edit `/etc/X11/xdm/Xservers` and comment out the line `:0 local /usr/bin/X :0 vt7 -nolisten tcp`. 
+* sudo Edit `/etc/X11/xdm/xdm-config` and comment out the line *DisplayManager.requestPort* by adding a "!" at the start of the line.`
+* sudo Edit `/etc/X11/xdm/Xaccess` and uncomment the line that has *#any host can get a login window* by removing the '#' at the start of the line.
+* If you don't want a graphical login on the Raspberry Pi HDMI port sudo Edit `/etc/X11/xdm/Xservers` and comment out the line `:0 local /usr/bin/X :0 vt7 -nolisten tcp` by adding a '#' at the start of the line.
 * `sudo systemctl restart xdm.service` to restart the service with the new settings
 
 The edit-xdm-config script (on this github) can be used to make the above modifications.
 
-**Note**: If your system has lightdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers once they are both installed, use `dpkg-reconfigure lightdm`.
+**Note**: If your system has both lightdm and xdm installed and you want to switch to xdm (or vice versa), the package installer will ask you which one you want to use. After completing the installation, reboot the system for the change to take effect. To switch between the two display managers if they are both installed, use `dpkg-reconfigure lightdm`.
 
 ### VNC Service configuration
+
+**NOTE** If you aren't comfortable editing system configuration files, I strongly encourage you to use the make-systemd-xvnc script on this github. The following explanation provides background on how to edit the configuration files, but these are not exhaustive and step-by-step.
 
 * A systemd socket/service config file pair is required for each VNC port, and each port will implement a single screen resolution. You can easily create the socket/service pair files with the make-systemd-xvnc script on this github or you can create your own in /etc/systemd/system (but make-systemd-xvnc is MUCH easier).
     * Edit the VNC configuration files as needed. If you used make-systemd-xvnc you should not need to modify them unless you run into a problem.

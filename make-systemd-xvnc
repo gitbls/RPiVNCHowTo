@@ -56,7 +56,7 @@ then
 fi
 
 echo ""
-echo "Enter VNC resolutions as desired"
+echo "Enter VNC resolutions as desired in the format WIDTHxHEIGHT (e.g. 1920x1080)"
 echo "Each will be assigned a successive VNC port"
 echo "Press Enter by itself to finish"
 echo ""

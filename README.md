@@ -64,9 +64,9 @@ NOTE: If you are going to have multiple different users login to the same Pi, yo
 RasPiOS Lite is exactly that...Lite. You'll need to install a few more packages. 
 
 * **Install** the basic XServer software and xterm
-    * `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base`
-* **For TigerVNC Server:** `sudo apt-get install tigervnc-standalone-server xfonts-100dpi xfonts-75dpi xfonts-scalable`
-* **For TightVNC server:** `sudo apt-get install tightvncserver xfonts-100dpi xfonts-75dpi xfonts-scalable`
+    * `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable`
+* **For TigerVNC Server:** `sudo apt-get install tigervnc-standalone-server`
+* **For TightVNC server:** `sudo apt-get install tightvncserver`
 * You'll need a *Display Manager*. I prefer xdm, but wdm and lightdm are good choices as well. `sudo apt-get install xdm` or `sudo apt-get install lightdm` as appropriate.
 * You'll also need a *Window Manager*. I prefer icewm, but you might prefer something different. In any case, you'll need to `sudo apt-get install` your Window Manager of choice.
 

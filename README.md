@@ -166,10 +166,9 @@ Description=XVNC Per-Connection Daemon
 
 [Service]
 ExecStart=-/usr/bin/Xtigervnc -noreset -inetd -query 127.0.0.1 -geometry 1880x1100 -pn -once -SecurityTypes None
-User=nobody
 StandardInput=socket
 StandardOutput=socket
-StandardError=syslog
+StandardError=journal
 ```
 ## Appendix 1 - xdm and selecting a Window Manager
 

@@ -128,7 +128,7 @@ If you are using make-systemd-xvnc you can easily create all the socket/service 
 
 ## What about using this remotely? Is it secure?
 
-The VNC protocol by itself is insecure, so you shouldn't use it over insecure networks, such as the internet, without taking precautions. With the solution documented here you need to use a VPN or similar solution (ssh, meet-in-the middle, etc) to ensure a secure connection. As an aside, I assume that RealVNC's Cloud Connections use an enhnaced VNC protocol to ensure high security.
+The VNC protocol by itself is insecure, so you shouldn't use it over insecure networks, such as the internet, without taking precautions. With the solution documented here you need to use a VPN or similar solution (ssh, meet-in-the middle, etc) to ensure a secure connection. As an aside, I assume that RealVNC's Cloud Connections use an enhanced VNC protocol to ensure high security.
 
 ## How does this work?
 

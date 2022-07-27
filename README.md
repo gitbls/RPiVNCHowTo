@@ -78,7 +78,7 @@ This section details the system configuration changes to enable virtual VNC desk
 
 The most popular Display Manager on RasPiOS is lightdm, and lightdm is installed by default on RasPiOS Full. I've documented xdm as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
 
-In either case, after updating the display manager configuration per the following details, issue this command on the console: `sudo systemctl set-default graphical.target`.
+In either case, on RasPiOS Lite, after updating the display manager configuration per the following details, issue this command on the console: `sudo systemctl set-default graphical.target`.
 
 #### Lightdm Configuration
 

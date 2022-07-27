@@ -46,8 +46,8 @@ So, either using sdm or this technique, if you want to have RealVNC and TigerVNC
 
 Full RasPiOS comes with the realvnc-vnc-server package installed. You can remove it or not. Then execute the following commands:
 
-* **For TigerVNC server:** `sudo apt-get install tigervnc-standalone-server xfonts-scalable xfonts-100dpi xfonts-75dpi`
-* **For TightVNC server:** `sudo apt-get install tightvncserver xfonts-scalable xfonts-100dpi xfonts-75dpi`
+* **TigerVNC server:** `sudo apt-get install tigervnc-standalone-server xfonts-scalable xfonts-100dpi xfonts-75dpi`
+* **TightVNC server:** `sudo apt-get install tightvncserver xfonts-scalable xfonts-100dpi xfonts-75dpi`
 
 Continue by performing the following steps, detailed under System Configuration below:
 
@@ -55,7 +55,7 @@ Continue by performing the following steps, detailed under System Configuration 
 * Create the xvnc service files as documented in VNC Service Configuration
 * sudo systemctl enable xvnc1.socket, and any other sockets that you've created
 * Reboot and you're done!
-* DO NOT install any of the packages suggested below for RasPiOS Lite.
+* **DO NOT** install any of the packages suggested below for RasPiOS Lite
 
 NOTE: If you are going to have multiple different users login to the same Pi, you'll need to disable AutoLogin in `sudo raspi-config`: System Options, S5(Boot/Auto Login), and then set B3 (Desktop).
 
@@ -65,8 +65,8 @@ RasPiOS Lite is exactly that...Lite. You'll need to install a few more packages.
 
 * **Install** the basic XServer software and xterm
     * `sudo apt-get install xserver-xorg xserver-xorg-core xserver-common xterm xfonts-base xfonts-100dpi xfonts-75dpi xfonts-scalable`
-* **For TigerVNC Server:** `sudo apt-get install tigervnc-standalone-server`
-* **For TightVNC server:** `sudo apt-get install tightvncserver`
+* **TigerVNC Server:** `sudo apt-get install tigervnc-standalone-server`
+* **TightVNC server:** `sudo apt-get install tightvncserver`
 * You'll need a *Display Manager*. I prefer xdm, but wdm and lightdm are good choices as well. `sudo apt-get install xdm` or `sudo apt-get install lightdm` as appropriate.
 * You'll also need a *Window Manager*. I prefer icewm, but you might prefer something different. In any case, you'll need to `sudo apt-get install` your Window Manager of choice.
 
@@ -77,6 +77,8 @@ This section details the system configuration changes to enable virtual VNC desk
 ### Display Manager Configuration
 
 The most popular Display Manager on RasPiOS is lightdm, and lightdm is installed by default on RasPiOS Full. I've documented xdm as well. In either case, the Display Manager must have XDMCP enabled, so that VNC can create the desktop.
+
+In either case, after updating the display manager configuration per the following details, issue this command on the console: `sudo systemctl set-default graphical.target`.
 
 #### Lightdm Configuration
 
@@ -91,6 +93,11 @@ port=177
 The `edit-lightdm-config` script on this github can be used to make this edit.
 
 After you've completed this change, `sudo systemctl restart lightdm.service` to restart the service with the new settings (this will log out your session!), or restart your system. If you don't, you'll only see a black screen when you connect to the system with VNC.
+
+If you prefer to not have lightdm to run on the (HDMI) console, that is, you only want a command-line console, sudo edit /etc/lightdm/lightdm.conf again and after the line `#start-default-seat=true` add this new line.
+```
+start-default-seat=false
+```
 
 #### xdm Configuration
 

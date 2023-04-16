@@ -1,0 +1,70 @@
+#!/bin/bash
+
+function errexit() {
+    echo -e "$1"
+    exit 1
+}
+
+cmd=$0
+[[ $EUID -ne 0 ]] && errexit "? Please rerun: 'sudo $cmd'"
+
+fl="/tmp/rpivnchowto-diagnostics"
+echo "*** Gathering diagnostic information for RPiVNCHowTo ***"
+rm -f $fl
+
+echo -e "*** System Info ***" >> $fl
+cat /etc/os-release >> $fl
+uname -a >> $fl
+
+if [ -f /etc/X11/default-display-manager ]
+then
+    dm=$(cat /etc/X11/default-display-manager)
+    echo -e "\n*** Display Manager is '$dm'" >> $fl
+    dmbn=$(basename $dm)
+else
+    echo -e "\n*** No Display Manager found" >> $fl
+    dmbn="No Display Manager"
+fi
+
+echo -e "\n*** xvnc Configuration Info ***" >> $fl
+echo -e "\n*** systemctl status xvnc1.socket" >> $fl
+systemctl status xvnc1.socket >> $fl
+
+echo -e "\n*** systemctl cat xvnc1@.service" >> $fl
+systemctl cat xvnc1@.service >> $fl
+
+echo -e "\n*** netstat -ltpn" >> $fl
+netstat -ltpn >> $fl
+
+echo -e "\n*** journalctl -b | grep -E \"xvnc|$dmbn\"" >> $fl
+journalctl -b | grep -E "xvnc|$dmbn"  >> $fl
+
+
+if [ "$dmbn" != "" ]
+then
+    echo -e "\n*** Display Manager '$dmbn' Log and Configuration Info ***" >> $fl
+    if [ "$dmbn" == "lightdm" ]
+    then
+	echo -e "\n*** /var/log/lightdm/lightdm.log" >> $fl
+	cat /var/log/lightdm/lightdm.log >> $fl
+	echo -e "\n*** xdmcp in lightdm.log" >> $fl
+	grep -i xdmcp /var/log/lightdm/lightdm.log >> $fl
+	echo -e "\n*** xdmcpserver configuration in lightdm.conf" >> $fl
+	grep -i -A 3 xdmcpserver /etc/lightdm/lightdm.conf >> $fl
+    elif [ "$dmbn" == "xdm" ]
+    then
+	echo -e "\n*** /var/log/xdm.log" >> $fl
+	cat /var/log/xdm.log >> $fl
+	echo -e "\n*** xdm-config" >> $fl
+	grep -i DisplayManager.requestPort /etc/X11/xdm/xdm-config >> $fl
+	echo -e "\n*** Xservers" >> $fl
+	grep -i vt7 /etc/X11/xdm/Xservers >> $fl
+	echo -e "\n*** Xaccess" >> $fl
+	grep -i 'any host' /etc/X11/xdm/Xaccess >> $fl
+    fi
+fi
+
+echo "Done."
+echo -e "\n*** Done *** " >> $fl
+echo "Please provide $fl to the RPiVNCHowTo maintainer"
+exit

@@ -29,8 +29,9 @@ fi
 #
 vncsrv=""
 extrasw=""
+[ -f /usr/bin/Xtightvnc -a -f /usr/bin/Xtigervnc ] && echo "%% Both xtigervnc and xtightvnc are installed; using xtigervnc"
+[ -f /usr/bin/Xtightvnc ] && vncsrv="/usr/bin/Xtightvnc" 
 [ -f /usr/bin/Xtigervnc ] && vncsrv="/usr/bin/Xtigervnc" && extrasw="-noreset -SecurityTypes None"
-[ -f /usr/bin/Xtightvnc ] && vncsrv="/usr/bin/Xtightvnc"
 [ "$vncsrv" == "" ] && echo "? Cannot find either Xtigervnc or Xtightvnc" && echo "  Please 'sudo apt install' a VNC Server (tigervnc-standalone-server or tightvncserver)" && exit
 echo "% Configuring dynamic VNC to use '$vncsrv'"
 #

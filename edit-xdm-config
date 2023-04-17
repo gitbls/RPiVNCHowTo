@@ -9,7 +9,13 @@ function askyn() {
     esac
 }
 
-echo""
+function errexit() {
+    echo -e "$1"
+    exit 1
+}
+
+[ -f /etc/X11/xdm/xdm-config ] || errexit "? Cannot find xdm configuration files"
+echo ""
 echo "** Editing xdm config files..."
 
 sudo sed -i "s/DisplayManager.requestPort:	0/\!DisplayManager.requestPort:	0/" /etc/X11/xdm/xdm-config

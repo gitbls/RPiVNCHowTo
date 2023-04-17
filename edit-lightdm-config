@@ -1,5 +1,11 @@
 #!/bin/bash
 
+function errexit() {
+    echo -e "$1"
+    exit 1
+}
+
+[ -f /etc/lightdm/lightdm.conf ] || errexit "? Cannot find /etc/lightdm/lightdm.conf"
 echo "% Editing lightdm config file..."
 echo "% Making a backup copy in /etc/lightdm/lightdm.conf.orig"
 cp /etc/lightdm/lightdm.conf /etc/lightdm/lightdm.conf.orig

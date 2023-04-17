@@ -106,7 +106,7 @@ then
 	    systemctl enable --now xvnc$i.socket
 	done
     else
-	echo "% You must 'sudo systemctl enable each of the xvnc sockets to enable them"
+	echo "% You must 'sudo systemctl enable' each of the xvnc sockets to enable them"
     fi
 fi
 

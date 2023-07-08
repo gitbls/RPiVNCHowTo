@@ -2,6 +2,8 @@
 
 How to install and configure efficient LAN-based VNC for virtual desktops on Raspberry Pi OS (RasPiOS) and any other Debian-based distro.
 
+NOTE: VNC only works on X11-based systems. More recent Ubuntu releases, such as 22.04 and later, appear to use Wayland by default. I have not had the time to sort out how to make this project work on Wayland-based systems.
+
 ## Overview
 
 There are several different VNC servers to choose from on Linux and RasPiOS, and there are many ways to install and configure VNC. This is one of the most efficient and lightweight VNC implementations for local LAN use. I've documented it so that you can use and enjoy it as well.

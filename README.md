@@ -12,7 +12,7 @@ Once VNC is set up according to this guide, each user can use their favorite VNC
 
 This guide assumes that you're installing onto a Raspberry Pi on your local LAN running RasPiOS, and does not address any extraordinary security concerns such as firewalls, port forwarding, etc. Depending on how your RPi RasPiOS security is configured, VNC may log you directly into a desktop, or you may be prompted for credentials. 
 
-These instructions have been tested on RasPiOS Buster as well as Raspbian Stretch, and details for both Full and Lite are included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use. 
+These instructions have been tested on RasPiOS Trixie, Bookworm, Bullseye, and Buster, and details for both Full and Lite are included. In the following notes, read "sudo Edit" as "sudo nano/vi/emacs/..." as appropriate for the editor you use. 
 
 If you find this github useful, please consider starring it to help me understand how many people are using it. Thanks!
 
@@ -26,15 +26,15 @@ But, Linux is all about choice, and there are at least 2 other VNC servers avail
 
 This method only configures VNC *virtual desktops*. If you want to connect to the system console, you probably want to do it for the best performance. In that case, you should probably use RealVNC, which is much more optimized for that use case. And note that you can use these virtual desktops alongside RealVNC Server, and have the best of both worlds. **NOTE:** Only TigerVNC cooperatively coexists with RealVNC. Installing TightVNC server seems to cause RealVNC Server to be uninstalled.
 
-**TightVNC** is a very nice VNC server, as well, but I found that at least one font was not always displayed correctly (9x15bold, specifically, which I have used for far too long in my xterm windows). Additionally, installing TightVNC forces the removal of realvnc-vnc-server, which is needed if you want to access the Console session in addition to virtual sessions.
+**TightVNC** is a very nice VNC server, as well. However, installing TightVNC and realvnc-vnc-server cannot coexist for some reason, which is needed if you want to access the Console session in addition to virtual sessions.
 
-The third VNC server is **TigerVNC**. The rest of this document is based on TigerVNC. (As an aside, TightVNC can be used with this method as well, however, the ExecStart command in the .service files that starts VNC is specific to TigerVNC and will need adjustment for tightvnc by changing `Xtigervnc` to `Xtightvnc`, in addition to installing the tightvncserver package.) **NOTE:**`make-systemd-xvnc` adjusts the command lines automatically for TightVNC.
+The third VNC server is **TigerVNC**. The rest of this document is based on TigerVNC. (As an aside, TightVNC can be used with this method as well, however, the ExecStart command in the .service files that starts VNC is specific to TigerVNC and will need adjustment for tightvnc by changing `Xtigervnc` to `Xtightvnc`, in addition to installing the tightvncserver package.) **NOTE:** The `make-systemd-xvnc` scripted installation tool adjusts the command lines automatically for TightVNC.
 
 TigerVNC (and TightVNC and RealVNC as well) provide a tool that greatly simplifies running a VNC server (`/usr/bin/vncserver`) with little to no config file editing. However, this method isn't optimal from a system resources perspective in that it keeps a VNC server running whether you're using it or not, and you need to either manually start it or sort out how to automaticallly start it when the system reboots. It is, however, a much simpler way to get started for some people. The method described here starts the requested VNC server on-demand, and is fully integrated into Linux systemd.
 
 *Should you use /usr/bin/vncserver or this method?* If you have never typed into a terminal on Linux, `vncserver` was made for you. On the other hand, if you're moderately comfortable working with the Linux bash command line and are able to make simple file edits, the method documented here is a much efficient.
 
-## A Note about RealVNC and these virtual desktops
+## A Note about RealVNC and the virtual desktops implemented here
 
 It is absolutely possible to use RealVNC server for graphical console access and virtual desktops enabled by this github on the same system. In fact, if you'd like to do this as easily as possible, I encourage to take a close look at [sdm](https://github.com/gitbls/sdm).
 
@@ -58,9 +58,9 @@ sudo edit-lightdm-config
 sudo make-systemd-xvnc
 sudo reboot
 ```
-**NOTE: DO NOT** install any of the packages suggested below for RasPiOS Lite
+**NOTE: DO NOT** install any of the packages suggested below for RasPiOS Lite when on RasPiOS Full
 
-If you are have multiple different users login to the same Pi, you'll need to disable AutoLogin in `sudo raspi-config`: System Options, S5(Boot/Auto Login), and then set B3 (Desktop).
+If you plan to have multiple different users (usernames) login to the same Pi, you'll need to disable AutoLogin in `sudo raspi-config`: System Options, S5(Boot/Auto Login), and then set B3 (Desktop).
 
 ## Installing onto RasPiOS Lite
 
